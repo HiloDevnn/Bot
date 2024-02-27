@@ -87,4 +87,4 @@ async def players(ctx, ADD, NUM):
 
 # Rest of your code...
 
-bot.run("MTE5MzIyNDUxMTMxOTk2NTg0Ng.GhFz4H.EN9hVxRBNqNuZne3qbUsYoLSsx30tNOMVRAYMQ")
+bot.run(TOKEN)
