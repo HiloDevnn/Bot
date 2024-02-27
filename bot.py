@@ -87,4 +87,14 @@ async def players(ctx, ADD, NUM):
 
 # Rest of your code...
 
+with open("./config.json", 'r') as configjsonFile:
+    configData = json.load(configjsonFile)
+    TOKEN = configData["DISCORD_TOKEN"]
+
+@bot.event
+async def on_ready():
+    activity = discord.Game(name="Orbx Hosting#7091", type=3)
+    await bot.change_presence(status=discord.Status.online, activity=activity)
+    print("Bot is Online!")
+    
 bot.run(TOKEN)
