@@ -1,14 +1,9 @@
 import discord
 import json
-import asyncio
 from discord.ext import commands
 from samp_client.client import SampClient
-import requests
 
 bot = commands.Bot(command_prefix='$', case_insensitive=True)
-
-# Variable to store the token after login
-ogp_token = None
 
 async def get_server_info(address, port):
     try:
@@ -19,45 +14,47 @@ async def get_server_info(address, port):
         print(f"Error getting server info for {address}:{port}: {e}")
         return None
 
-async def login_and_get_servers(ctx):
-    global ogp_token
+@bot.command()
+async def check(ctx):
     try:
-        value1 = "botstatus"
-        value2 = "ssbotsshta6483"
-        response = requests.post('http://178.62.220.38:56727/ogp_api.php?token/create', data={'user': value1, 'password': value2})
-        if response.status_code == 200:
-            ogp_token = response.json()['message']
-            await ctx.send("Logged in successfully and token obtained.")
-            
-            # Get list of servers
-            server_list_response = requests.post('http://178.62.220.38:56727/ogp_api.php?user_games/list_servers', data={'token': ogp_token})
-            server_list = server_list_response.json()['message']
-            
-            most_players_server = None
-            max_players = -1
-            
-            for server in server_list:
-                ip = server['address']
-                port = server['port']
-                info = await get_server_info(ip, port)
-                if info and info.players > max_players:
-                    most_players_server = info
-                    max_players = info.players
-            
-            if most_players_server:
-                await ctx.send(f"Most players found on {most_players_server.hostname} with {most_players_server.players} players.")
-            else:
-                await ctx.send("No servers found or all servers unreachable.")
-            
+        with open('servers.json', 'r') as file:
+            server_list = json.load(file)
+        
+        most_players_server = None
+        max_players = -1
+        
+        for server in server_list:
+            ip = server['ip']
+            port = server['port']
+            info = await get_server_info(ip, port)
+            if info and info.players > max_players:
+                most_players_server = info
+                max_players = info.players
+        
+        if most_players_server:
+            await ctx.send(f"Most players found on {most_players_server.hostname} with {most_players_server.players} players.")
         else:
-            await ctx.send("Failed to login. Check your username and password.")
+            await ctx.send("No servers found or all servers unreachable.")
     except Exception as e:
         print(e)
-        await ctx.send("An error occurred while trying to login.")
+        await ctx.send("An error occurred while trying to get server info.")
 
 @bot.command()
-async def login(ctx):
-    await login_and_get_servers(ctx)
+async def addserver(ctx, ip, port):
+    try:
+        with open('servers.json', 'r') as file:
+            server_list = json.load(file)
+        
+        new_server = {'ip': ip, 'port': port}
+        server_list.append(new_server)
+        
+        with open('servers.json', 'w') as file:
+            json.dump(server_list, file, indent=4)
+        
+        await ctx.send(f"Server {ip}:{port} added successfully.")
+    except Exception as e:
+        print(e)
+        await ctx.send("An error occurred while trying to add server.")
 
 @bot.command()
 async def players(ctx, ADD, NUM):
@@ -72,6 +69,25 @@ async def players(ctx, ADD, NUM):
 async def players_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
         await ctx.send('Usage: $players [ip] [port]')
+
+async def load_servers(ctx):
+    try:
+        # Load servers from file
+        with open('servers.json', 'r') as file:
+            server_list = json.load(file)
+        
+        for server in server_list:
+            ip = server['ip']
+            port = server['port']
+            info = await get_server_info(ip, port)
+            if info:
+                print(f"Loaded server: {info.hostname} ({ip}:{port})")
+            else:
+                print(f"Failed to load server: {ip}:{port}")
+        
+    except Exception as e:
+        print(e)
+        await ctx.send("An error occurred while trying to load servers.")
 
 # Rest of your code...
 
