@@ -54,9 +54,13 @@ async def check(ctx):
         }
         
         # Add server info to the embed
+        description = ""
         for idx, server in enumerate(top_10_servers, start=1):
             emoji = num_to_emoji.get(idx, '⁉️')
-            embed.description += f"{emoji} | ```{server['players']}/{server['max_players']}``` {server['hostname']}\n"
+            description += f"{emoji} | ```{server['players']}/{server['max_players']}``` {server['hostname']}\n"
+        
+        # Set the description of the embed
+        embed.description = description
         
         # Send the embed
         await ctx.send(embed=embed)
