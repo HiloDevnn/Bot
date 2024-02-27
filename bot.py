@@ -18,12 +18,14 @@ async def get_server_info(address, port):
 async def check(ctx):
     try:
         with open('servers.json', 'r') as file:
-            server_list = json.load(file)
+            data = json.load(file)
+        
+        samp_servers = data.get('samp_servers', [])
         
         # Create a temporary list to store server info
         temp_list = []
         
-        for server in server_list:
+        for server in samp_servers:
             ip = server['ip']
             port = server['port']
             info = await get_server_info(ip, port)
@@ -37,7 +39,7 @@ async def check(ctx):
         top_10_servers = sorted_servers[:10]
         
         # Create an embed
-        embed = discord.Embed(title="Top 10 Servers by Players", color=0xf1bc48)
+        embed = discord.Embed(title="Orbx Hosting TOP 10 SA:MP Servers", color=0xf1bc48)
         
         # Emoji dictionary
         num_to_emoji = {
@@ -57,7 +59,7 @@ async def check(ctx):
         description = ""
         for idx, server in enumerate(top_10_servers, start=1):
             emoji = num_to_emoji.get(idx, '⁉️')
-            description += f"{emoji} | ```{server['players']}/{server['max_players']}``` {server['hostname']}\n"
+            description += f"{emoji} ```{server['players']}/{server['max_players']}``` | {server['hostname']}\n"
         
         # Set the description of the embed
         embed.description = description
@@ -69,11 +71,22 @@ async def check(ctx):
         await ctx.send("An error occurred while trying to get server info.")
 
 @bot.command()
-async def addserver(ctx, ip: str, port: int):
+async def addserver(ctx, server_type: str, ip: str, port: int):
     try:
         with open('servers.json', 'r') as file:
-            servers = json.load(file)
+            data = json.load(file)
         
+        # Check if the server type exists in the JSON data
+        if server_type.lower() == 'samp':
+            servers_key = 'samp_servers'
+        elif server_type.lower() == 'mta':
+            servers_key = 'mta_servers'
+        else:
+            await ctx.send("Invalid server type. Please use 'samp' or 'mta'.")
+            return
+        
+        servers = data.get(servers_key, [])
+
         # Check if the server already exists
         for server in servers:
             if server['ip'] == ip and server['port'] == port:
@@ -83,14 +96,16 @@ async def addserver(ctx, ip: str, port: int):
         # Add the new server to the list
         new_server = {'ip': ip, 'port': port}
         servers.append(new_server)
+        data[servers_key] = servers
 
         # Save the updated server list back to the file
         with open('servers.json', 'w') as file:
-            json.dump(servers, file, indent=4)
+            json.dump(data, file, indent=4)
 
         await ctx.send("Server added successfully.")
     except Exception as e:
         await ctx.send(f"An error occurred while trying to add server: {e}")
+
 
 @bot.command()
 async def players(ctx, ADD, NUM):
