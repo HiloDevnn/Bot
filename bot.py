@@ -37,7 +37,7 @@ async def check(ctx):
         top_10_servers = sorted_servers[:10]
         
         # Create an embed
-        embed = discord.Embed(title="Top 10 Servers by Players", color=0x00ff00)
+        embed = discord.Embed(title="Top 10 Servers by Players", color=0xf1bc48)
         
         # Emoji dictionary
         num_to_emoji = {
@@ -56,7 +56,7 @@ async def check(ctx):
         # Add server info to the embed
         for idx, server in enumerate(top_10_servers, start=1):
             emoji = num_to_emoji.get(idx, '⁉️')
-            embed.add_field(name=f"{emoji} Server", value=f"**Name:** {server['hostname']}\n**Players:** {server['players']}/{server['max_players']}", inline=False)
+           embed.description += f"{emoji} | ```{server['players']}/{server['max_players']}``` {server['hostname']}\n"
         
         # Send the embed
         await ctx.send(embed=embed)
