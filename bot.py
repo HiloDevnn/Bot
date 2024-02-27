@@ -3,7 +3,7 @@ import json
 import asyncio
 from discord.ext import commands
 from samp_client.client import SampClient
-import axios
+import requests
 
 bot = commands.Bot(command_prefix='$', case_insensitive=True)
 
@@ -24,14 +24,14 @@ async def login_and_get_servers(ctx):
     try:
         value1 = "botstatus"
         value2 = "ssbotsshta6483"
-        response = axios.post('http://178.62.220.38:56727/ogp_api.php?token/create', data={'user': value1, 'password': value2})
+        response = requests.post('http://178.62.220.38:56727/ogp_api.php?token/create', data={'user': value1, 'password': value2})
         if response.status_code == 200:
-            ogp_token = response.data['message']
+            ogp_token = response.json()['message']
             await ctx.send("Logged in successfully and token obtained.")
             
             # Get list of servers
-            server_list_response = await axios.post('http://178.62.220.38:56727/ogp_api.php?user_games/list_servers', data={'token': ogp_token})
-            server_list = server_list_response.data['message']
+            server_list_response = requests.post('http://178.62.220.38:56727/ogp_api.php?user_games/list_servers', data={'token': ogp_token})
+            server_list = server_list_response.json()['message']
             
             most_players_server = None
             max_players = -1
