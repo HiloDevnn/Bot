@@ -20,19 +20,28 @@ async def check(ctx):
         with open('servers.json', 'r') as file:
             server_list = json.load(file)
         
-        most_players_server = None
-        max_players = -1
+        # Create a temporary list to store server info
+        temp_list = []
         
         for server in server_list:
             ip = server['ip']
             port = server['port']
             info = await get_server_info(ip, port)
-            if info and info.players > max_players:
-                most_players_server = info
-                max_players = info.players
+            if info:
+                temp_list.append({'hostname': info.hostname, 'players': info.players, 'max_players': info.max_players})
         
-        if most_players_server:
-            await ctx.send(f"Most players found on {most_players_server.hostname} with {most_players_server.players} players.")
+        # Sort the servers based on the number of players
+        sorted_servers = sorted(temp_list, key=lambda x: x['players'], reverse=True)
+        
+        # Get the top 3 servers
+        top_3_servers = sorted_servers[:3]
+        
+        # Send the top 3 servers as a message
+        if top_3_servers:
+            message = "Top 3 Servers by Players:\n"
+            for idx, server in enumerate(top_3_servers, start=1):
+                message += f"{idx}. {server['hostname']} - {server['players']}/{server['max_players']} players\n"
+            await ctx.send(message)
         else:
             await ctx.send("No servers found or all servers unreachable.")
     except Exception as e:
@@ -42,7 +51,6 @@ async def check(ctx):
 @bot.command()
 async def add_server(ctx, ip, port):
     try:
-        # Your code to add the server goes here
         with open('servers.json', 'r') as file:
             servers = json.load(file)
         
