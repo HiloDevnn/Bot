@@ -40,22 +40,35 @@ async def check(ctx):
         await ctx.send("An error occurred while trying to get server info.")
 
 @bot.command()
-async def addserver(ctx, ip, port):
+async def add_server(ctx, ip, port):
     try:
+        # Your code to add the server goes here
         with open('servers.json', 'r') as file:
-            server_list = json.load(file)
+            servers = json.load(file)
         
-        new_server = {'ip': ip, 'port': port}
-        server_list.append(new_server)
-        
-        with open('servers.json', 'w') as file:
-            json.dump(server_list, file, indent=4)
-        
-        await ctx.send(f"Server {ip}:{port} added successfully.")
-    except Exception as e:
-        print(e)
-        await ctx.send("An error occurred while trying to add server.")
+        # Check if the server already exists
+        for server in servers:
+            if server['ip'] == ip and server['port'] == port:
+                await ctx.send("Server already exists.")
+                return
 
+        # Add the new server to the list
+        new_server = {'ip': ip, 'port': port}
+        servers.append(new_server)
+
+        # Save the updated server list back to the file
+        with open('servers.json', 'w') as file:
+            json.dump(servers, file, indent=4)
+
+        await ctx.send("Server added successfully.")
+    except Exception as e:
+        await ctx.send(f"An error occurred while trying to add server: {e}")
+
+@bot.command()
+async def addserver(ctx, ip: str, port: int):
+    await add_server(ctx, ip, port)
+    
+    
 @bot.command()
 async def players(ctx, ADD, NUM):
     with SampClient(address=ADD, port=NUM) as client:
@@ -69,25 +82,6 @@ async def players(ctx, ADD, NUM):
 async def players_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
         await ctx.send('Usage: $players [ip] [port]')
-
-async def load_servers(ctx):
-    try:
-        # Load servers from file
-        with open('servers.json', 'r') as file:
-            server_list = json.load(file)
-        
-        for server in server_list:
-            ip = server['ip']
-            port = server['port']
-            info = await get_server_info(ip, port)
-            if info:
-                print(f"Loaded server: {info.hostname} ({ip}:{port})")
-            else:
-                print(f"Failed to load server: {ip}:{port}")
-        
-    except Exception as e:
-        print(e)
-        await ctx.send("An error occurred while trying to load servers.")
 
 # Rest of your code...
 
