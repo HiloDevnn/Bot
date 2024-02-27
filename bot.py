@@ -36,20 +36,21 @@ async def check(ctx):
         # Get the top 10 servers
         top_10_servers = sorted_servers[:10]
         
-        # Send the top 10 servers as a message
-        if top_10_servers:
-            message = "Top 10 Servers by Players:\n"
-            for idx, server in enumerate(top_10_servers, start=1):
-                message += f"{idx}. {server['hostname']} - {server['players']}/{server['max_players']} players\n"
-            await ctx.send(message)
-        else:
-            await ctx.send("No servers found or all servers unreachable.")
+        # Create an embed
+        embed = discord.Embed(title="Top 10 Servers by Players", color=0x00ff00)
+        
+        # Add server info to the embed
+        for idx, server in enumerate(top_10_servers, start=1):
+            embed.add_field(name=f"Server {idx}", value=f"**Name:** {server['hostname']}\n**Players:** {server['players']}/{server['max_players']}", inline=False)
+        
+        # Send the embed
+        await ctx.send(embed=embed)
     except Exception as e:
         print(e)
         await ctx.send("An error occurred while trying to get server info.")
 
 @bot.command()
-async def add_server(ctx, ip, port):
+async def addserver(ctx, ip: str, port: int):
     try:
         with open('servers.json', 'r') as file:
             servers = json.load(file)
@@ -73,34 +74,17 @@ async def add_server(ctx, ip, port):
         await ctx.send(f"An error occurred while trying to add server: {e}")
 
 @bot.command()
-async def addserver(ctx, ip: str, port: int):
-    await add_server(ctx, ip, port)
-    
-    
-@bot.command()
 async def players(ctx, ADD, NUM):
-    with SampClient(address=ADD, port=NUM) as client:
-        info = client.get_server_info()
-        players = [client.name for client in client.get_server_clients_detailed()]
-        server_name = info.hostname
-        players_list = "\n".join(players)
-        await ctx.send(f'```Server Name: {info.hostname}\nPlayers: {info.players}/{info.max_players}```')
-
-@players.error
-async def players_error(ctx, error):
-    if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send('Usage: $players [ip] [port]')
+    try:
+        with SampClient(address=ADD, port=NUM) as client:
+            info = client.get_server_info()
+            players = [client.name for client in client.get_server_clients_detailed()]
+            server_name = info.hostname
+            players_list = "\n".join(players)
+            await ctx.send(f'```Server Name: {info.hostname}\nPlayers: {info.players}/{info.max_players}```')
+    except Exception as e:
+        await ctx.send(f"An error occurred while trying to get players info: {e}")
 
 # Rest of your code...
 
-with open("./config.json", 'r') as configjsonFile:
-    configData = json.load(configjsonFile)
-    TOKEN = configData["DISCORD_TOKEN"]
-
-@bot.event
-async def on_ready():
-    activity = discord.Game(name="Orbx Hosting#7091", type=3)
-    await bot.change_presence(status=discord.Status.online, activity=activity)
-    print("Bot is Online!")
-
-bot.run(TOKEN)
+bot.run("MTE5MzIyNDUxMTMxOTk2NTg0Ng.GhFz4H.EN9hVxRBNqNuZne3qbUsYoLSsx30tNOMVRAYMQ")
