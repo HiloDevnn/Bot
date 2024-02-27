@@ -38,8 +38,9 @@ async def check(ctx):
         # Get the top 10 servers
         top_10_servers = sorted_servers[:10]
         
-        # Create an embed
-        embed = discord.Embed(title="Orbx Hosting TOP 10 SA:MP Servers", color=0xf1bc48)
+        # Create the first embed
+        embed1 = discord.Embed(title="<:orbx:1188474625429082142> Orbx Hosting TOP 10 SA:MP Servers", color=0xf1bc48)
+        embed1.set_image(url="https://media.discordapp.net/attachments/1172640694939168808/1188495474525741158/20231224_155630.jpg?ex=659abbaa&is=658846aa&hm=47d25a69bfcc1a676ac6d2f6a323d1a21ba09dcd17318f85edacd8e468cacdae&")
         
         # Emoji dictionary
         num_to_emoji = {
@@ -55,20 +56,26 @@ async def check(ctx):
             10: '🔟'
         }
         
-        # Add server info to the embed
-        description = ""
+        # Add server info to the first embed
+        description1 = ""
         for idx, server in enumerate(top_10_servers, start=1):
             emoji = num_to_emoji.get(idx, '⁉️')
-            description += f"{emoji} ```{server['players']}/{server['max_players']}``` | {server['hostname']}\n"
+            description1 += f"{emoji} ```{server['players']}/{server['max_players']}``` | {server['hostname']}\n"
         
-        # Set the description of the embed
-        embed.description = description
+        # Set the description of the first embed
+        embed1.description = description1
         
-        # Send the embed
-        await ctx.send(embed=embed)
+        # Create the second embed
+embed2 = discord.Embed(title="", description="4600 Players Are Now Connected To All This Orbx Servers\nNext Refresh In || 0 minutes ||", color=0xf1bc48)
+embed2.set_footer(text="Orbx Status | All rights Reserved 2023 - 2024", icon_url="https://cdn.discordapp.com/attachments/1172640694939168808/1188462447921733703/20231224_132801.jpg?ex=659a9ce8&is=658827e8&hm=3038be5bee65b6d90313e270b416010e8bbc4f4f43439c13d0496cac886fe673&")
+
+# Send both embeds in the same message
+await ctx.send(embeds=[embed1, embed2])
+
     except Exception as e:
         print(e)
         await ctx.send("An error occurred while trying to get server info.")
+
 
 @bot.command()
 async def addserver(ctx, server_type: str, ip: str, port: int):
