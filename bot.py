@@ -2,6 +2,7 @@ import discord
 import json
 from discord.ext import commands
 from samp_client.client import SampClient
+
 intents = discord.Intents.default()
 intents.messages = True
 
