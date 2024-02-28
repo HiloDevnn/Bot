@@ -87,7 +87,7 @@ async def checktop(ctx):
         guild = bot.get_guild(1150160889996136459)
         channel = guild.get_channel(1211807374885789726)
         
-        message = await channel.fetch_message(1212480958746460202)
+        message = await channel.fetch_message(1212513392976199822)
         
         await message.edit(embeds=[embed1_samp, embed2])
         
@@ -167,21 +167,21 @@ with open("./config.json", 'r') as configjsonFile:
     TOKEN = configData["DISCORD_TOKEN"]
 
 # Define the check loop
-#@tasks.loop(seconds=50)
-#async def checktop_loop(ctx):
-#    await checktop(ctx)
+@tasks.loop(seconds=5)
+async def checktop_loop(ctx):
+    await checktop(ctx)
     
 # Bot ready event
 @bot.event
 async def on_ready():
     activity = discord.Game(name="Orbx | Top Servers", type=3)
-    await bot.change_presence(status=discord.Status.visible, activity=activity)
+    await bot.change_presence(status=discord.Status.invisible, activity=activity)
     print("Bot is Online!")
     
     # Start the check loop
     guild = bot.get_guild(1150160889996136459)
     channel = guild.get_channel(1211807374885789726)
-  #  checktop_loop.start(channel)
+    checktop_loop.start(channel)
 
 # Run the bot
 bot.run(TOKEN)
