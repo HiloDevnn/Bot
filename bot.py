@@ -3,8 +3,7 @@ import json
 from discord.ext import commands
 from samp_client.client import SampClient
 intents = discord.Intents.default()
-intents.typing = False
-intents.presences = False
+intents.messages = True
 
 bot = commands.Bot(command_prefix='$', case_insensitive=True, intents=intents)
 
