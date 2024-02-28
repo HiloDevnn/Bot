@@ -110,12 +110,16 @@ async def check(ctx):
         embed2.set_footer(text="Orbx Hosting | All rights Reserved 2023 - 2024", icon_url="https://cdn.discordapp.com/attachments/1172640694939168808/1188462447921733703/20231224_132801.jpg?ex=659a9ce8&is=658827e8&hm=3038be5bee65b6d90313e270b416010e8bbc4f4f43439c13d0496cac886fe673&")
         embed2.set_image(url="https://media.discordapp.net/attachments/1172640694939168808/1188495474525741158/20231224_155630.jpg?ex=659abbaa&is=658846aa&hm=47d25a69bfcc1a676ac6d2f6a323d1a21ba09dcd17318f85edacd8e468cacdae&")
         
+        # Fetch and edit the existing message
+        channel = ctx.channel
+        message = await channel.fetch_message(1212480958746460202)
         
-        await ctx.send(embeds=[embed1_samp, embed1_mta, embed2])
+        await message.edit(embeds=[embed1_samp, embed1_mta, embed2])
         
     except Exception as e:
         print(e)
-        await ctx.send("An error occurred while trying to get server info.")
+        await ctx.send("An error occurred while trying to update the message.")
+
 
 # Command to add a server
 @bot.command()
