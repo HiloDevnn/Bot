@@ -29,57 +29,84 @@ async def check(ctx):
             data = json.load(file)
         
         samp_servers = data.get('samp_servers', [])
+        mta_servers = data.get('mta_servers', [])
         
         # Create a temporary list to store server info
-        temp_list = []
+        samp_temp_list = []
+        mta_temp_list = []
         
+        # Get SA:MP servers info
         for server in samp_servers:
             ip = server['ip']
             port = server['port']
             info = await get_server_info(ip, port)
             if info:
-                temp_list.append({'hostname': info.hostname, 'players': info.players, 'max_players': info.max_players})
+                samp_temp_list.append({'hostname': info.hostname, 'players': info.players, 'max_players': info.max_players})
         
-        # Sort the servers based on the number of players
-        sorted_servers = sorted(temp_list, key=lambda x: x['players'], reverse=True)
+        # Get MTA servers info
+        for server in mta_servers:
+            ip = server['ip']
+            port = server['port']
+            info = await get_server_info(ip, port)
+            if info:
+                mta_temp_list.append({'hostname': info.hostname, 'players': info.players, 'max_players': info.max_players})
         
-        # Get the top 10 servers
-        top_10_servers = sorted_servers[:10]
+        # Sort the SA:MP servers based on the number of players
+        sorted_samp_servers = sorted(samp_temp_list, key=lambda x: x['players'], reverse=True)
+        # Sort the MTA servers based on the number of players
+        sorted_mta_servers = sorted(mta_temp_list, key=lambda x: x['players'], reverse=True)
         
-        # Create the first embed
-        embed1 = discord.Embed(title="<:orbx:1188474625429082142> Orbx Hosting TOP 10 SA:MP Servers", color=0xf1bc48)
-        embed1.set_image(url="https://media.discordapp.net/attachments/1172640694939168808/1188495474525741158/20231224_155630.jpg?ex=659abbaa&is=658846aa&hm=47d25a69bfcc1a676ac6d2f6a323d1a21ba09dcd17318f85edacd8e468cacdae&")
+        # Get the top 10 servers for each
+        top_10_samp_servers = sorted_samp_servers[:10]
+        top_10_mta_servers = sorted_mta_servers[:10]
+        
+        # Create the first embed for SA:MP servers
+        embed1_samp = discord.Embed(title="<:orbx:1188474625429082142> Orbx Hosting TOP 10 SA:MP Servers", color=0xf1bc48)
+        embed1_samp.set_image(url="https://media.discordapp.net/attachments/1172640694939168808/1188495474525741158/20231224_155630.jpg?ex=659abbaa&is=658846aa&hm=47d25a69bfcc1a676ac6d2f6a323d1a21ba09dcd17318f85edacd8e468cacdae&")
         
         # Emoji dictionary
         num_to_emoji = {
             1: '<:emoji_1:1212127903521972224>',
-            2: '<:emoji_1:1212127903521972224>',
-            3: '<:emoji_1:1212127903521972224>',
-            4: '<:emoji_1:1212127903521972224>',
-            5: '<:emoji_1:1212127903521972224>',
-            6: '<:emoji_1:1212127903521972224>',
-            7: '<:emoji_1:1212127903521972224>',
-            8: '<:emoji_1:1212127903521972224>',
-            9: '<:emoji_1:1212127903521972224>',
-            10: '<:emoji_1:1212127903521972224>'
+            2: '<:emoji_2:1212127903521972224>',
+            3: '<:emoji_3:1212127903521972224>',
+            4: '<:emoji_4:1212127903521972224>',
+            5: '<:emoji_5:1212127903521972224>',
+            6: '<:emoji_6:1212127903521972224>',
+            7: '<:emoji_7:1212127903521972224>',
+            8: '<:emoji_8:1212127903521972224>',
+            9: '<:emoji_9:1212127903521972224>',
+            10: '<:emoji_10:1212127903521972224>'
         }
         
-        # Add server info to the first embed
-        description1 = ""
-        for idx, server in enumerate(top_10_servers, start=1):
+        # Add server info to the first embed for SA:MP servers
+        description1_samp = ""
+        for idx, server in enumerate(top_10_samp_servers, start=1):
             emoji = num_to_emoji.get(idx, '⁉️')
-            description1 += f"{emoji} ```{server['players']}/{server['max_players']}``` | {server['hostname']}\n"
+            description1_samp += f"{emoji} ```{server['players']}/{server['max_players']}``` | {server['hostname']}\n"
         
-        # Set the description of the first embed
-        embed1.description = description1
+        # Set the description of the first embed for SA:MP servers
+        embed1_samp.description = description1_samp
+        
+        # Create the first embed for MTA servers
+        embed1_mta = discord.Embed(title="<:orbx:1188474625429082142> Orbx Hosting TOP 10 MTA Servers", color=0xf1bc48)
+        embed1_mta.set_image(url="https://media.discordapp.net/attachments/1172640694939168808/1188495474525741158/20231224_155630.jpg?ex=659abbaa&is=658846aa&hm=47d25a69bfcc1a676ac6d2f6a323d1a21ba09dcd17318f85edacd8e468cacdae&")
+        
+        # Add server info to the first embed for MTA servers
+        description1_mta = ""
+        for idx, server in enumerate(top_10_mta_servers, start=1):
+            emoji = num_to_emoji.get(idx, '⁉️')
+            description1_mta += f"{emoji} ```{server['players']}/{server['max_players']}``` | {server['hostname']}\n"
+        
+        # Set the description of the first embed for MTA servers
+        embed1_mta.description = description1_mta
         
         # Create the second embed
-        embed2 = discord.Embed(title="", description="<:orbx:1188474625429082142> 4600 Players Are Now Connected To All This Orbx Servers.\nNext Refresh in: || 5 seconds || ⏱️", color=0xf1bc48)
+        embed2 = discord.Embed(title="", description="<:orbx:1188474625429082142> 4600 Players Are Now Connected To All These Orbx Servers.\nNext Refresh in: || 5 seconds || ⏱️", color=0xf1bc48)
         embed2.set_footer(text="Orbx Hosting | All rights Reserved 2023 - 2024", icon_url="https://cdn.discordapp.com/attachments/1172640694939168808/1188462447921733703/20231224_132801.jpg?ex=659a9ce8&is=658827e8&hm=3038be5bee65b6d90313e270b416010e8bbc4f4f43439c13d0496cac886fe673&")
         embed2.set_image(url="https://media.discordapp.net/attachments/1172640694939168808/1188495474525741158/20231224_155630.jpg?ex=659abbaa&is=658846aa&hm=47d25a69bfcc1a676ac6d2f6a323d1a21ba09dcd17318f85edacd8e468cacdae&")
         
-        # Send both embeds in a single message
-        await ctx.send(embeds=[embed1, embed2])
+        
+        await ctx.send(embeds=[embed1_samp, embed1_mta, embed2])
         
     except Exception as e:
         print(e)
