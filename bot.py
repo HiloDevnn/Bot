@@ -68,9 +68,12 @@ async def check(ctx):
         # Create the second embed
         embed2 = discord.Embed(title="", description="4600 Players Are Now Connected To All This Orbx Servers\nNext Refresh In || 0 minutes ||", color=0xf1bc48)
         embed2.set_footer(text="Orbx Status | All rights Reserved 2023 - 2024", icon_url="https://cdn.discordapp.com/attachments/1172640694939168808/1188462447921733703/20231224_132801.jpg?ex=659a9ce8&is=658827e8&hm=3038be5bee65b6d90313e270b416010e8bbc4f4f43439c13d0496cac886fe673&")
-
-        # Send both embeds in the same message
-        await ctx.send(embeds=[embed1, embed2])
+        
+        # Combine both embeds into a single message
+        combined_embed = f"{embed1.to_dict()}\n{embed2.to_dict()}"
+        
+        # Send the combined embed
+        await ctx.send(embed=discord.Embed.from_dict(combined_embed))
     except Exception as e:
         print(e)
         await ctx.send("An error occurred while trying to get server info.")
