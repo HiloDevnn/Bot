@@ -51,6 +51,10 @@ async def check(ctx):
             if info:
                 mta_temp_list.append({'hostname': info.hostname, 'players': info.players, 'max_players': info.max_players})
         
+        # Calculate total players for both SA:MP and MTA servers
+        total_samp_players = sum(server['players'] for server in samp_temp_list)
+        total_mta_players = sum(server['players'] for server in mta_temp_list)
+        
         # Sort the SA:MP servers based on the number of players
         sorted_samp_servers = sorted(samp_temp_list, key=lambda x: x['players'], reverse=True)
         # Sort the MTA servers based on the number of players
@@ -101,7 +105,8 @@ async def check(ctx):
         embed1_mta.description = description1_mta
         
         # Create the second embed
-        embed2 = discord.Embed(title="", description="<:orbx:1188474625429082142> 4600 Players Are Now Connected To All These Orbx Servers.\nNext Refresh in: || 5 seconds || ⏱️", color=0xf1bc48)
+        total_players_text = f"<:orbx:1188474625429082142> {total_samp_players + total_mta_players} Players Are Now Connected To All These Orbx Servers.\nNext Refresh in: || 5 seconds || ⏱️"
+        embed2 = discord.Embed(title="", description=total_players_text, color=0xf1bc48)
         embed2.set_footer(text="Orbx Hosting | All rights Reserved 2023 - 2024", icon_url="https://cdn.discordapp.com/attachments/1172640694939168808/1188462447921733703/20231224_132801.jpg?ex=659a9ce8&is=658827e8&hm=3038be5bee65b6d90313e270b416010e8bbc4f4f43439c13d0496cac886fe673&")
         embed2.set_image(url="https://media.discordapp.net/attachments/1172640694939168808/1188495474525741158/20231224_155630.jpg?ex=659abbaa&is=658846aa&hm=47d25a69bfcc1a676ac6d2f6a323d1a21ba09dcd17318f85edacd8e468cacdae&")
         
