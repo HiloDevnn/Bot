@@ -4,7 +4,7 @@ from discord.ext import commands
 from samp_client.client import SampClient
 
 intents = discord.Intents.default()
-intents.messages = True
+intents.message_content = True
 
 bot = commands.Bot(command_prefix='$', case_insensitive=True, intents=intents)
 
@@ -74,11 +74,11 @@ async def check(ctx):
         embed2.set_footer(text="Orbx Status | All rights Reserved 2023 - 2024", icon_url="https://cdn.discordapp.com/attachments/1172640694939168808/1188462447921733703/20231224_132801.jpg?ex=659a9ce8&is=658827e8&hm=3038be5bee65b6d90313e270b416010e8bbc4f4f43439c13d0496cac886fe673&")
         
         # Send both embeds in a single message
-        await ctx.send(embeds=[embed1, embed2])
-        
-    except Exception as e:
-        print(e)
-        await ctx.send("An error occurred while trying to get server info.")
+await ctx.send(embeds=[embed1, embed2])
+
+except Exception as e:
+    print(e)
+    await ctx.send("An error occurred while trying to get server info.")
 
 @bot.command()
 async def addserver(ctx, server_type: str, ip: str, port: int):
@@ -129,6 +129,13 @@ async def players(ctx, address: str, port: int):
         await ctx.send(f"An error occurred while trying to get players info: {e}")
 
 # Rest of your code...
+
+# Update the intents to include message_content
+intents = discord.Intents.default()
+intents.messages = True
+intents.message_content = True
+
+bot = commands.Bot(command_prefix='$', case_insensitive=True, intents=intents)
 
 with open("./config.json", 'r') as configjsonFile:
     configData = json.load(configjsonFile)
