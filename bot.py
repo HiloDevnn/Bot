@@ -1,6 +1,6 @@
 import discord
 import json
-from discord.ext import commands
+from discord.ext import commands, tasks
 from samp_client.client import SampClient
 
 # Define intents
@@ -122,57 +122,6 @@ async def check(ctx):
         print(e)
         await ctx.send("An error occurred while trying to update the message.")
 
-
-# Command to add a server
-@bot.command()
-async def addserver(ctx, server_type: str, ip: str, port: int):
-    try:
-        with open('servers.json', 'r') as file:
-            data = json.load(file)
-        
-        # Check if the server type exists in the JSON data
-        if server_type.lower() == 'samp':
-            servers_key = 'samp_servers'
-        elif server_type.lower() == 'mta':
-            servers_key = 'mta_servers'
-        else:
-            await ctx.send("Invalid server type. Please use 'samp' or 'mta'.")
-            return
-        
-        servers = data.get(servers_key, [])
-
-        # Check if the server already exists
-        for server in servers:
-            if server['ip'] == ip and server['port'] == port:
-                await ctx.send("Server already exists.")
-                return
-
-        # Add the new server to the list
-        new_server = {'ip': ip, 'port': port}
-        servers.append(new_server)
-        data[servers_key] = servers
-
-        # Save the updated server list back to the file
-        with open('servers.json', 'w') as file:
-            json.dump(data, file, indent=4)
-
-        await ctx.send("Server added successfully.")
-    except Exception as e:
-        await ctx.send(f"An error occurred while trying to add server: {e}")
-
-# Command to get players info
-@bot.command()
-async def players(ctx, address: str, port: int):
-    try:
-        with SampClient(address=address, port=port) as client:
-            info = client.get_server_info()
-            players = [client.name for client in client.get_server_clients_detailed()]
-            server_name = info.hostname
-            players_list = "\n".join(players)
-            await ctx.send(f'```Server Name: {info.hostname}\nPlayers: {info.players}/{info.max_players}```\n{players_list}')
-    except Exception as e:
-        await ctx.send(f"An error occurred while trying to get players info: {e}")
-
 # Read token from config file
 with open("./config.json", 'r') as configjsonFile:
     configData = json.load(configjsonFile)
@@ -180,8 +129,8 @@ with open("./config.json", 'r') as configjsonFile:
 
 # Define the check loop
 @tasks.loop(seconds=5)
-async def check_loop():
-    await check()
+async def check_loop(ctx):
+    await check(ctx)
     
 # Bot ready event
 @bot.event
@@ -191,8 +140,9 @@ async def on_ready():
     print("Bot is Online!")
     
     # Start the check loop
-    check_loop.start()
-    
-    
+    guild = bot.get_guild(1184971073645715487)
+    channel = guild.get_channel(1206679721237155890)
+    check_loop.start(channel)
+
 # Run the bot
 bot.run(TOKEN)
