@@ -111,7 +111,9 @@ async def check(ctx):
         embed2.set_image(url="https://media.discordapp.net/attachments/1172640694939168808/1188495474525741158/20231224_155630.jpg?ex=659abbaa&is=658846aa&hm=47d25a69bfcc1a676ac6d2f6a323d1a21ba09dcd17318f85edacd8e468cacdae&")
         
         # Fetch and edit the existing message
-        channel = ctx.channel
+        guild = bot.get_guild(1184971073645715487)
+        channel = guild.get_channel(1206679721237155890)
+        
         message = await channel.fetch_message(1212480958746460202)
         
         await message.edit(embeds=[embed1_samp, embed1_mta, embed2])
@@ -176,12 +178,21 @@ with open("./config.json", 'r') as configjsonFile:
     configData = json.load(configjsonFile)
     TOKEN = configData["DISCORD_TOKEN"]
 
+# Define the check loop
+@tasks.loop(seconds=5)
+async def check_loop():
+    await check()
+    
 # Bot ready event
 @bot.event
 async def on_ready():
     activity = discord.Game(name="Orbx | Top Servers", type=3)
     await bot.change_presence(status=discord.Status.online, activity=activity)
     print("Bot is Online!")
+    
+    # Start the check loop
+    check_loop.start()
+    
     
 # Run the bot
 bot.run(TOKEN)
