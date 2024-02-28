@@ -1,9 +1,15 @@
 import discord
 import json
 from discord.ext import commands
+from discord import Intents
 from samp_client.client import SampClient
 
-bot = commands.Bot(command_prefix='$', case_insensitive=True)
+intents = Intents.default()
+intents.typing = False
+intents.presences = False
+intents.members = True
+
+bot = commands.Bot(command_prefix='$', case_insensitive=True, intents=intents)
 
 async def get_server_info(address, port):
     try:
