@@ -52,16 +52,16 @@ async def check(ctx):
         
         # Emoji dictionary
         num_to_emoji = {
-            1: '1️⃣',
-            2: '2️⃣',
-            3: '3️⃣',
-            4: '4️⃣',
-            5: '5️⃣',
-            6: '6️⃣',
-            7: '7️⃣',
-            8: '8️⃣',
-            9: '9️⃣',
-            10: '🔟'
+            1: '<:emoji_1:1212127903521972224>',
+            2: '<:emoji_1:1212127903521972224>',
+            3: '<:emoji_1:1212127903521972224>',
+            4: '<:emoji_1:1212127903521972224>',
+            5: '<:emoji_1:1212127903521972224>',
+            6: '<:emoji_1:1212127903521972224>',
+            7: '<:emoji_1:1212127903521972224>',
+            8: '<:emoji_1:1212127903521972224>',
+            9: '<:emoji_1:1212127903521972224>',
+            10: '<:emoji_1:1212127903521972224>'
         }
         
         # Add server info to the first embed
@@ -74,8 +74,9 @@ async def check(ctx):
         embed1.description = description1
         
         # Create the second embed
-        embed2 = discord.Embed(title="", description="4600 Players Are Now Connected To All This Orbx Servers\nNext Refresh In || 0 minutes ||", color=0xf1bc48)
-        embed2.set_footer(text="Orbx Status | All rights Reserved 2023 - 2024", icon_url="https://cdn.discordapp.com/attachments/1172640694939168808/1188462447921733703/20231224_132801.jpg?ex=659a9ce8&is=658827e8&hm=3038be5bee65b6d90313e270b416010e8bbc4f4f43439c13d0496cac886fe673&")
+        embed2 = discord.Embed(title="", description="<:orbx:1188474625429082142> 4600 Players Are Now Connected To All This Orbx Servers.\nNext Refresh in: || 5 seconds || ⏱️", color=0xf1bc48)
+        embed2.set_footer(text="Orbx Hosting | All rights Reserved 2023 - 2024", icon_url="https://cdn.discordapp.com/attachments/1172640694939168808/1188462447921733703/20231224_132801.jpg?ex=659a9ce8&is=658827e8&hm=3038be5bee65b6d90313e270b416010e8bbc4f4f43439c13d0496cac886fe673&")
+        embed2.set_image(url="https://media.discordapp.net/attachments/1172640694939168808/1188495474525741158/20231224_155630.jpg?ex=659abbaa&is=658846aa&hm=47d25a69bfcc1a676ac6d2f6a323d1a21ba09dcd17318f85edacd8e468cacdae&")
         
         # Send both embeds in a single message
         await ctx.send(embeds=[embed1, embed2])
@@ -142,7 +143,7 @@ with open("./config.json", 'r') as configjsonFile:
 # Bot ready event
 @bot.event
 async def on_ready():
-    activity = discord.Game(name="Orbx Hosting#7091", type=3)
+    activity = discord.Game(name="Orbx | Top Servers", type=3)
     await bot.change_presence(status=discord.Status.online, activity=activity)
     print("Bot is Online!")
     
