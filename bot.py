@@ -14,7 +14,7 @@ bot = commands.Bot(command_prefix='T$', case_insensitive=True, intents=intents)
 # Function to get server info
 async def get_server_info(address, port):
     try:
-        async with SampClient(address=address, port=port) as client:
+        async with SampClient(address=address, port=port, timeout=10) as client:
             await asyncio.sleep(1)  # Add a 1-second delay
             try:
                 info = await client.get_server_info()
