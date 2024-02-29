@@ -16,7 +16,11 @@ async def get_server_info(address, port):
     try:
         async with SampClient(address=address, port=port) as client:
             await asyncio.sleep(1)  # Add a 1-second delay
-            info = await client.get_server_info()
+            try:
+                info = await client.get_server_info()
+            except asyncio.TimeoutError:
+                print(f"Timeout error getting server info for {address}:{port}")
+                return None
             return info
     except Exception as e:
         print(f"Error getting server info for {address}:{port}: {e}")
