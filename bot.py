@@ -28,6 +28,8 @@ async def get_server_info(address, port):
     except Exception as e:
         print(f"Error creating or closing SampClient instance for {address}:{port}: {e}")
         return None
+    finally:
+        await client.close()
 
 # Command to checktop server info
 @bot.command()
