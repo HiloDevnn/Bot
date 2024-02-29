@@ -51,7 +51,7 @@ async def checktop(ctx):
         top_10_samp_servers = sorted_samp_servers[:10]
         
         # Create the first embed for SA:MP servers
-        embed1_samp = discord.Embed(title="<:orbx:1188474625429082142> Orbx Hosting TOP 10 SA:MP Servers", color=0xf1bc48)
+        embed1_samp = discord.Embed(title="<:orbx:1188474625429082142> Orbx Hosting Top 10 SA:MP Servers", color=0xf1bc48)
         embed1_samp.set_image(url="https://media.discordapp.net/attachments/1172640694939168808/1188495474525741158/20231224_155630.jpg?ex=659abbaa&is=658846aa&hm=47d25a69bfcc1a676ac6d2f6a323d1a21ba09dcd17318f85edacd8e468cacdae&")
         
         # Emoji dictionary
