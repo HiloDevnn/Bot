@@ -21,12 +21,12 @@ async def get_server_info(address, port):
             except asyncio.TimeoutError:
                 print(f"Timeout error getting server info for {address}:{port}")
                 return None
+            except Exception as e:
+                print(f"Error getting server info for {address}:{port}: {e}")
+                return None
             return info
-    except TypeError:
-        print(f"Error creating SampClient instance for {address}:{port}")
-        return None
     except Exception as e:
-        print(f"Error getting server info for {address}:{port}: {e}")
+        print(f"Error creating or closing SampClient instance for {address}:{port}: {e}")
         return None
 
 # Command to checktop server info
