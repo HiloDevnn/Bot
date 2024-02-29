@@ -14,8 +14,9 @@ bot = commands.Bot(command_prefix='T$', case_insensitive=True, intents=intents)
 # Function to get server info
 async def get_server_info(address, port):
     try:
-        with SampClient(address=address, port=port) as client:
-            info = client.get_server_info()
+        async with SampClient(address=address, port=port, timeout=45) as client:
+            await asyncio.sleep(1)  # Add a 1-second delay
+            info = await client.get_server_info()
             return info
     except Exception as e:
         print(f"Error getting server info for {address}:{port}: {e}")
